@@ -240,3 +240,47 @@ function NextWeatherStage()
     end
 end
 
+AddEventHandler('vSync:setWeather', function(weather)
+	for i,wtype in ipairs(AvailableWeatherTypes) do
+		if wtype == string.upper(weather) then
+			validWeatherType = true
+		end
+	end
+	
+	freezeTime = true
+	DynamicWeather = true
+	
+	if validWeatherType then
+		CurrentWeather = string.upper(weather)
+		newWeatherTimer = 10
+		TriggerEvent('vSync:requestSync')
+	end
+end)
+
+AddEventHandler('vSync:setTime', function(hour, minutes)
+	freezeTime = true
+	DynamicWeather = true
+	
+	if tonumber(hour) ~= nil and tonumber(minutes) ~= nil then
+		local argh = tonumber(hour)
+		local argm = tonumber(minutes)
+		if argh < 24 then
+			ShiftToHour(argh)
+		else
+			ShiftToHour(0)
+		end
+		if argm < 60 then
+			ShiftToMinute(argm)
+		else
+			ShiftToMinute(0)
+		end
+		local newtime = math.floor(((baseTime+timeOffset)/60)%24) .. ":"
+		local minute = math.floor((baseTime+timeOffset)%60)
+		if minute < 10 then
+			newtime = newtime .. "0" .. minute
+		else
+			newtime = newtime .. minute
+		end
+		TriggerEvent('vSync:requestSync')
+	end
+end)

@@ -39,94 +39,6 @@ AddEventHandler('vSync:requestSync', function()
     TriggerClientEvent('vSync:updateWeather', -1, CurrentWeather, blackout)
     TriggerClientEvent('vSync:updateTime', -1, baseTime, timeOffset, freezeTime)
 end)
---[[
-RegisterServerEvent('esx_doorlock:davetest69')
-AddEventHandler('esx_doorlock:davetest69', function()   
-    blackout = not blackout
-    if blackout then
-        print("Blackout is now enabled.")
-        TriggerClientEvent('chat:addMessage', -1, { template = '<div class="chat-message power"><b>LS Water & Power : </b> {1}</div>', args = { fal, " Power Station is having problems please stand by "  } })
-    else
-        print("Blackout is now disabled.")
-        TriggerClientEvent('chat:addMessage', -1, { template = '<div class="chat-message power"><b>LS Water & Power : </b> {1}</div>', args = { fal, " All problems resolved thank you for your patience " } })
-    end
-    TriggerEvent('vSync:requestSync')
-end)]]--
-
-ESX.RegisterCommand('freezetime', 'admin', function(xPlayer, args, showError)
-	freezeTime = not freezeTime
-	if freezeTime then
-		TriggerClientEvent('vSync:notify', xPlayer.source, 'Time is now ~b~frozen~s~.')
-	else
-		TriggerClientEvent('vSync:notify', xPlayer.source, 'Time is ~y~no longer frozen~s~.')
-	end
-end, true, {help = "", validate = true})
-
-ESX.RegisterCommand('freezeweather', 'admin', function(xPlayer, args, showError)
-	freezeTime = not freezeTime
-	DynamicWeather = not DynamicWeather
-	if not DynamicWeather then
-		TriggerClientEvent('vSync:notify', xPlayer.source, 'Dynamic weather changes are now ~r~disabled~s~.')
-	else
-		TriggerClientEvent('vSync:notify', xPlayer.source, 'Dynamic weather changes are now ~b~enabled~s~.')
-	end
-end, true, {help = "", validate = true})
-
-ESX.RegisterCommand('weather', 'admin', function(xPlayer, args, showError)
-	for i,wtype in ipairs(AvailableWeatherTypes) do
-		if wtype == string.upper(args.weather) then
-			validWeatherType = true
-		end
-	end
-	if validWeatherType then
-		TriggerClientEvent('vSync:notify', xPlayer.source, 'Weather will change to: ~y~' .. string.lower(args.weather) .. "~s~.")
-		CurrentWeather = string.upper(args.weather)
-		newWeatherTimer = 10
-		TriggerEvent('vSync:requestSync')
-	else
-		TriggerClientEvent('chatMessage', xPlayer.source, '', {255,255,255}, '^8Error: ^1Invalid weather type, valid weather types are: ^0\nEXTRASUNNY CLEAR NEUTRAL SMOG FOGGY OVERCAST CLOUDS CLEARING RAIN THUNDER SNOW BLIZZARD SNOWLIGHT XMAS HALLOWEEN ')
-	end
-end, true, {help = "", validate = true,arguments = {
-	{name = 'weather', help = '', type = 'string'}
-}})
-
-ESX.RegisterCommand('blackout', 'admin', function(xPlayer, args, showError)
-	blackout = not blackout
-	if blackout then
-		TriggerClientEvent('vSync:notify', xPlayer.source, 'Blackout is now ~b~enabled~s~.')
-	else
-		TriggerClientEvent('vSync:notify', xPlayer.source, 'Blackout is now ~r~disabled~s~.')
-	end
-	TriggerEvent('vSync:requestSync')
-end, true, {help = "", validate = true})
-
-ESX.RegisterCommand('morning', 'admin', function(xPlayer, args, showError)
-	ShiftToMinute(0)
-	ShiftToHour(9)
-	TriggerClientEvent('vSync:notify', xPlayer.source, 'Time set to ~y~morning~s~.')
-	TriggerEvent('vSync:requestSync')
-end, true, {help = "", validate = true})
-
-ESX.RegisterCommand('noon', 'admin', function(xPlayer, args, showError)
-	ShiftToMinute(0)
-	ShiftToHour(12)
-	TriggerClientEvent('vSync:notify', xPlayer.source, 'Time set to ~y~noon~s~.')
-	TriggerEvent('vSync:requestSync')
-end, true, {help = "", validate = true})
-
-ESX.RegisterCommand('evening', 'admin', function(xPlayer, args, showError)
-	ShiftToMinute(0)
-	ShiftToHour(18)
-	TriggerClientEvent('vSync:notify', xPlayer.source, 'Time set to ~y~evening~s~.')
-	TriggerEvent('vSync:requestSync')
-end, true, {help = "", validate = true})
-
-ESX.RegisterCommand('night', 'admin', function(xPlayer, args, showError)
-	ShiftToMinute(0)
-	ShiftToHour(23)
-	TriggerClientEvent('vSync:notify', xPlayer.source, 'Time set to ~y~night~s~.')
-	TriggerEvent('vSync:requestSync')
-end, true, {help = "", validate = true})
 
 function ShiftToMinute(minute)
     timeOffset = timeOffset - ( ( (baseTime+timeOffset) % 60 ) - minute )
@@ -136,7 +48,7 @@ function ShiftToHour(hour)
     timeOffset = timeOffset - ( ( ((baseTime+timeOffset)/60) % 24 ) - hour ) * 60
 end
 
-ESX.RegisterCommand('time', 'admin', function(xPlayer, args, showError)
+ESX.RunCustomFunction("AddCommand", "time", 1, function(xPlayer, args)
 	if tonumber(args.hour) ~= nil and tonumber(args.min) ~= nil then
 		local argh = tonumber(args.hour)
 		local argm = tonumber(args.min)
@@ -162,10 +74,10 @@ ESX.RegisterCommand('time', 'admin', function(xPlayer, args, showError)
 	else
 		TriggerClientEvent('chatMessage', xPlayer.source, '', {255,255,255}, '^8Error: ^1Invalid syntax. Use ^0/time <hour> <minute> ^1instead!')
 	end
-end, true, {help = "", validate = true, arguments = {
-	{name = 'hour', help = '', type = 'number'},
-	{name = 'min', help = '', type = 'number'}
-}})
+end, {
+	{name = 'hour', type = 'number'},
+	{name = 'min', type = 'number'}
+}, '.time hour min', '.')
 
 Citizen.CreateThread(function()
     while true do

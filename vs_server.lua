@@ -153,7 +153,7 @@ function NextWeatherStage()
 end
 
 AddEventHandler('vSync:setWeather', function(weather)
-	for i,wtype in ipairs(AvailableWeatherTypes) do
+    for i,wtype in ipairs(AvailableWeatherTypes) do
 		if wtype == string.upper(weather) then
 			validWeatherType = true
 		end
@@ -170,7 +170,7 @@ AddEventHandler('vSync:setWeather', function(weather)
 end)
 
 AddEventHandler('vSync:setTime', function(hour, minutes)
-	freezeTime = true
+    freezeTime = true
 	DynamicWeather = true
 	
 	if tonumber(hour) ~= nil and tonumber(minutes) ~= nil then

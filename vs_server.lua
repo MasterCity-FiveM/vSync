@@ -48,7 +48,7 @@ function ShiftToHour(hour)
     timeOffset = timeOffset - ( ( ((baseTime+timeOffset)/60) % 24 ) - hour ) * 60
 end
 
-ESX.RunCustomFunction("AddCommand", "time", 1, function(xPlayer, args)
+ESX.RunCustomFunction("AddCommand", "time", 5, function(xPlayer, args)
 	if tonumber(args.hour) ~= nil and tonumber(args.min) ~= nil then
 		local argh = tonumber(args.hour)
 		local argm = tonumber(args.min)

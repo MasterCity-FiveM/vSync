@@ -19,7 +19,7 @@ Citizen.CreateThread(function()
             SetWeatherTypeOverTime(CurrentWeather, 15.0)
             Citizen.Wait(15000)
         end
-        Citizen.Wait(100) -- Wait 0 seconds to prevent crashing.
+        Citizen.Wait(1000) -- Wait 0 seconds to prevent crashing.
         SetBlackout(blackout)
         SetArtificialLightsState(blackout)
         ClearOverrideWeather()
@@ -48,7 +48,7 @@ Citizen.CreateThread(function()
     local hour = 0
     local minute = 0
     while true do
-        Citizen.Wait(0)
+        Citizen.Wait(1000)
         local newBaseTime = baseTime
         if GetGameTimer() - 500  > timer then
             newBaseTime = newBaseTime + 0.25
